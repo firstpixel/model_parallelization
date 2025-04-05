@@ -46,6 +46,14 @@ AVAILABLE_MODELS = {
         "pytorch_compatible_devices": ["GPU 0", "GPU 1", "Both GPUs (Model Parallelism)", "CPU", "MPS (Apple Silicon)"],
         "supports_mlx": True
     },
+    # --- Added Gemma 2 9B ---
+    "Gemma-2-9B-IT": {
+        "id": "google/gemma-2-9b-it",
+        "base_kwargs": {"torch_dtype": torch.bfloat16},
+        "notes": "Gemma 2 9B Instruct model. Requires bfloat16.",
+        "pytorch_compatible_devices": ["GPU 0", "GPU 1", "Both GPUs (Model Parallelism)", "CPU", "MPS (Apple Silicon)"],
+        "supports_mlx": True # Gemma 2 models often convert well
+    },
      "Llama-3.2-1B": {
         "id": "meta-llama/Llama-3.2-1B",
         "base_kwargs": {"torch_dtype": torch.bfloat16},
@@ -77,6 +85,20 @@ AVAILABLE_MODELS = {
         "pytorch_compatible_devices": ["GPU 0", "GPU 1", "Both GPUs (Model Parallelism)"],
         "supports_mlx": False # MLX doesn't support bitsandbytes 8-bit directly
     },
+     # --- Added DeepSeek R1 Distill Llama 70B ---
+    "DeepSeek-R1-Distill-Llama-70B (8-bit)": {
+        "id": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+        "base_kwargs": {
+            "trust_remote_code": True, # DeepSeek models often require this
+            "torch_dtype": torch.bfloat16,
+            "quantization_config": BitsAndBytesConfig(load_in_8bit=True), # Essential for 70B on 2x3090
+        },
+        "notes": "Large distilled model (70B). Requires 8-bit quantization (CUDA, bitsandbytes), trust_remote_code, and likely model parallelism. Needs significant VRAM.",
+        # Primarily targeting multi-GPU CUDA setup due to size and quantization
+        "pytorch_compatible_devices": ["Both GPUs (Model Parallelism)"], # Maybe single GPU if using 4-bit, but start restrictive
+        "supports_mlx": False # Very unlikely due to size, quantization, custom code
+    },
+
 }
 
 # --- Device Availability Check ---
