@@ -1,0 +1,6 @@
+[server]
+enableStaticServing = true
+fileWatcherType = "none" # This makes it a string
+
+[browser]
+serverAddress = "localhost"
